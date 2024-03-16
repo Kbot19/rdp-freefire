@@ -1,4 +1,4 @@
-name: RDP
+name: CI
 
 on: [push, workflow_dispatch]
 
@@ -13,9 +13,7 @@ jobs:
     - name: Extract
       run: Expand-Archive ngrok.zip
     - name: Auth
-      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+      run: .\ngrok\ngrok.exe authtoken 2caHmdmIRjB4ANpwvKxjOYuH56N_2NnL8f3pYFBrzTvUVVPzy
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
@@ -23,3 +21,5 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Create Tunnel
       run: .\ngrok\ngrok.exe tcp 3389
+    - name: Wait for 30 minutes
+      run: Start-Sleep -s 1800  # 30 minutes = 30 * 60 seconds
